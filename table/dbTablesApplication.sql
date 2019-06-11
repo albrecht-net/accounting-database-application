@@ -61,6 +61,25 @@ DEFAULT CHARSET = utf8mb4;
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `version`
+--
+
+CREATE TABLE `version` (
+    `versionID` INT(11) NOT NULL AUTO_INCREMENT,
+    `major` INT(11) NOT NULL,
+    `minor` INT(11) NOT NULL,
+    `patch` INT(11) NOT NULL,
+    `identifier` VARCHAR(16) NULL DEFAULT NULL,
+    `versionString` VARCHAR(64) NULL DEFAULT NULL,
+    PRIMARY KEY(`versionID`)
+)
+ENGINE = InnoDB
+DEFAULT CHARSET = utf8mb4
+COMMENT = 'Version';
+
+-- --------------------------------------------------------
+
+--
 -- Constraints der Tabelle `databases`
 --
 ALTER TABLE `databases`
@@ -74,3 +93,31 @@ ALTER TABLE `databases`
 ALTER TABLE `userconfig`
   ADD CONSTRAINT `userconfig_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE,
   ADD CONSTRAINT `userconfig_ibfk_2` FOREIGN KEY (`defaultDb`) REFERENCES `databases` (`dbID`) ON DELETE SET NULL;
+
+-- --------------------------------------------------------
+
+--
+-- Trigger der Tabelle `version`
+--
+
+-- generate_versionString_insert
+CREATE TRIGGER `generate_versionString_insert` BEFORE INSERT
+ON
+	`version` FOR EACH ROW
+SET
+	NEW.versionString = CONCAT('v', NEW.major, '.', NEW.minor, '.', NEW.patch, IF(ISNULL(NEW.identifier), '', '-'), IFNULL(NEW.identifier, ''));
+
+-- generate_versionString_update
+CREATE TRIGGER `generate_versionString_update` BEFORE UPDATE
+ON
+	`version` FOR EACH ROW
+SET
+	NEW.versionString = CONCAT('v', NEW.major, '.', NEW.minor, '.', NEW.patch, IF(ISNULL(NEW.identifier), '', '-'), IFNULL(NEW.identifier, ''));
+
+-- --------------------------------------------------------
+
+--
+-- Versionsinformationen einfügen
+--
+
+INSERT INTO `version` (`versionID`, `major`, `minor`, `patch`, `identifier`, `versionString`) VALUES (NULL, '0', '0', '0', NULL, NULL);

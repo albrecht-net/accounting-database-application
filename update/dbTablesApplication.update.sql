@@ -1,23 +1,22 @@
 -- Datenbank Tabellen Updates für die Applikations-Datenbank
 -- Achtung: Die Updates sind nur für die angegebene Versionserhöhung gültig und sollten nach aufsteigener Versionsnummer ausgeführt werden!
+-- Die hier verwendeten Versionsnummern beziehen sich auf die Journal Datenbank. Die Kompabilität zu Accounting muss mithilfe der Versionsübersicht sichergestellt werden.
 --
 
 -- --------------------------------------------------------
 
 --
--- Update von v1.4.0-beta zu v2.0.0-beta
---
-ALTER TABLE `databases` DEFAULT charset = utf8mb4 COLLATE = utf8mb4_general_ci;
-ALTER TABLE `users` DEFAULT charset = utf8mb4 COLLATE = utf8mb4_general_ci
-ALTER TABLE `userconfig` DEFAULT charset = utf8mb4 COLLATE = utf8mb4_general_ci
-ALTER TABLE `databases` CHANGE `datumErstellt` `created` DATETIME NOT NULL;
-
--- --------------------------------------------------------
-
---
--- Update von v0.8.0-alpha zu v1.4.0-beta
+-- Update von v1.0.0 zu v0.0.0
 --
 
-RENAME TABLE `favorites` TO `templates`;
-ALTER TABLE `templates` CHANGE `favoriteID` `templateID` INT(32) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `templates` ADD `datumErstellt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `templateID`;
+-- Tabelle erstellen
+CREATE TABLE `version` ( `versionID` INT(11) NOT NULL AUTO_INCREMENT, `major` INT(11) NOT NULL, `minor` INT(11) NOT NULL, `patch` INT(11) NOT NULL, `identifier` VARCHAR(16) NULL DEFAULT NULL, `versionString` VARCHAR(64) NULL DEFAULT NULL, PRIMARY KEY(`versionID`) ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Version';
+
+-- Trigger (insert)
+CREATE TRIGGER `generate_versionString_insert` BEFORE INSERT ON `version` FOR EACH ROW SET NEW.versionString = CONCAT('v', NEW.major, '.', NEW.minor, '.', NEW.patch, IF(ISNULL(NEW.identifier), '', '-'), IFNULL(NEW.identifier, ''));
+
+-- Trigger (update)
+CREATE TRIGGER `generate_versionString_update` BEFORE UPDATE ON `version` FOR EACH ROW SET NEW.versionString = CONCAT('v', NEW.major, '.', NEW.minor, '.', NEW.patch, IF(ISNULL(NEW.identifier), '', '-'), IFNULL(NEW.identifier, ''));
+
+-- Versionsinformation einfügen
+INSERT INTO `version` (`versionID`, `major`, `minor`, `patch`, `identifier`, `versionString`) VALUES (NULL, '0', '0', '0', NULL, NULL);
