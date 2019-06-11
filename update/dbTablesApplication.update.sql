@@ -6,7 +6,7 @@
 -- --------------------------------------------------------
 
 --
--- Update von v1.0.0 zu v0.0.0
+-- Update von v1.0.0 zu v1.2.0
 --
 
 -- Tabelle erstellen
@@ -19,4 +19,4 @@ CREATE TRIGGER `generate_versionString_insert` BEFORE INSERT ON `version` FOR EA
 CREATE TRIGGER `generate_versionString_update` BEFORE UPDATE ON `version` FOR EACH ROW SET NEW.versionString = CONCAT('v', NEW.major, '.', NEW.minor, '.', NEW.patch, IF(ISNULL(NEW.identifier), '', '-'), IFNULL(NEW.identifier, ''));
 
 -- Versionsinformation einfügen
-INSERT INTO `version` (`versionID`, `major`, `minor`, `patch`, `identifier`, `versionString`) VALUES (NULL, '0', '0', '0', NULL, NULL);
+INSERT INTO `version` (`versionID`, `major`, `minor`, `patch`, `identifier`, `versionString`) VALUES (NULL, '1', '2', '0', NULL, NULL);

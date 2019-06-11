@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-v1.2.0 (xxx.xx.xx)
+## v1.2.0 (2019.06.11)
 ### Added
 - In der Tabelle "version" ist die Versionsinformation der Datenbank hinterlegt. Diese werden bei der Ersterstellung oder bei einem Datenbank-Update automatisch eingefügt.
 ### Removed
